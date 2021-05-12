@@ -1,18 +1,25 @@
-import React from 'react'
+import React,{useContext,useEffect} from 'react'
+import ProyectoContext from '../../context/Proyectos/proyectoContext';
 import Proyecto from './Proyecto';
 
 const ListadoProyectos = () => {
 
-    const listaProyectos = [];
+    const {proyectos,obtenerProyectos} = useContext(ProyectoContext)
+    
+
+    useEffect(() => {
+        obtenerProyectos() // la funcion del state ya va venir cargada con la informacion
+    },[]) // solo se va cargar cuando el componente se cargue el componente
 
     return ( 
 
         <ul className="listado-proyectos">
             {
-                listaProyectos.length === 0 ? 
+                proyectos.length === 0 ? 
                     ( <li className="proyecto">No hay proyectos</li>)
-                : listaProyectos.map(proyecto => (
+                : proyectos.map(proyecto => (
                     <Proyecto 
+                        key={proyecto.id}
                         proyecto = {proyecto}
                     />
                 ))

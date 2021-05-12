@@ -1,7 +1,13 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import ProyectoContext from '../../context/Proyectos/proyectoContext';
 
 const FormTarea = () => {
+
+    const {proyectoActual} = useContext(ProyectoContext);
+
     return ( 
+        proyectoActual ?
+
         <div className="formulario">
             <form>
                 <div className="contenedor-input">
@@ -22,7 +28,7 @@ const FormTarea = () => {
                     />
                 </div>
             </form>
-        </div>
+        </div>: null
      );
 }
  
