@@ -6,7 +6,8 @@ import {
     LISTADO_PROYECTOS,
     NUEVO_PROYECTO,
     VALIDAR_FORMULARIO,
-    PROYECTO_ACTUAL
+    PROYECTO_ACTUAL,
+    ELIMINAR_PROYECTO
 
 } from '../../types';
 
@@ -77,6 +78,14 @@ const ProyectoState = props => {
         })
     }
 
+    const eliminarProyecto = id => {
+
+        dispatch({
+            type:ELIMINAR_PROYECTO,
+            payload: id
+        })
+    }
+
     //retornar el provider
     
     return (
@@ -90,7 +99,8 @@ const ProyectoState = props => {
                 obtenerProyectos,
                 agregarProyecto,
                 mostrarError,
-                selecccionarProyecto
+                selecccionarProyecto,
+                eliminarProyecto
             }}
         >
         {

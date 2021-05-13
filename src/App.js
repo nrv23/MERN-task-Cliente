@@ -8,38 +8,42 @@ import {
   Route
 } from 'react-router-dom';
 import ProyectoState from './context/Proyectos/proyectoState';
+import TareaState from './context/Tareas/tareaState';
 
 // en el componente principal se llaman los provider del context ṕara poder ser consumidos por los compoentes
 
 function App() {
   return (
     //agregar los consumer del context antes de todos los componentes y el routing
-
+    
     <ProyectoState>
-      <Router> {/* El Componente router va rodear todas las rutas de la aplicacion*/}
-        <Switch> {/* El Componente Switch detecta cual de las rutas se visita para redirecionar y renderizar el componente
-          de esa ruta
-        */}
+        <TareaState>
+        <Router> {/* El Componente router va rodear todas las rutas de la aplicacion*/}
+          <Switch> {/* El Componente Switch detecta cual de las rutas se visita para redirecionar y renderizar el componente
+            de esa ruta
+          */}
 
-        <Route exact path="/" component={Login} />
-        <Route exact path="/registrar" component={Registrar} />
-        <Route exact path="/proyectos" component={Proyectos} />
+          <Route exact path="/" component={Login} />
+          <Route exact path="/registrar" component={Registrar} />
+          <Route exact path="/proyectos" component={Proyectos} />
 
-        {/*
-        
-          La propiedad Route es la que va renderizar los componentes
+          {/*
           
-          Tienen las propiedades exact path y component
+            La propiedad Route es la que va renderizar los componentes
+            
+            Tienen las propiedades exact path y component
 
-          exact path="/" es la que lee la ruta que le voy a pasar para que renderice un componente
-          component={Login} esta propiedad llama al componente que va cargar
+            exact path="/" es la que lee la ruta que le voy a pasar para que renderice un componente
+            component={Login} esta propiedad llama al componente que va cargar
 
-          como la ruta es la raiz seria el login
-        */}
+            como la ruta es la raiz seria el login
+          */}
 
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
+        </TareaState>
     </ProyectoState>
+    
   );
 }
 
