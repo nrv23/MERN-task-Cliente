@@ -1,20 +1,21 @@
-import React,{useState} from 'react'
+import React,{useState,useContext,useEffect} from 'react'
 import { Link } from 'react-router-dom';
-//Link es un componente que se utiliza en vez de la etiqueta a,
-const Registrar = () => {
+import alertaContext from '../../context/alertas/alertaContext';
+import authContext from '../../context/Auth/authContext';
 
+//Link es un componente que se utiliza en vez de la etiqueta a, registrarUsuario
+const Registrar = (props) => {
+
+    const {mostrarAlerta,alertaState} = useContext(alertaContext); // el context carga todo lo que el provider exporta desde el 
+    //archivo que carga el state y las funciones del state
+    const {registrarUsuario,autenticado,mensaje} =useContext(authContext)
     const [login,guardarLogin] = useState({
         email: '',
         password: '',
-        username: '',
+        nombre: '',
         confirm_password: ''
     });
-
-    const [error, guardarError] = useState(false);
-
-    const {email,password,username,confirm_password} = login;
-
-    let mensaje= '';
+    const {email,password,nombre,confirm_password} = login;
 
     const actualizarState = ({target: {name,value}}) => {
         
@@ -24,52 +25,54 @@ const Registrar = () => {
         })
     }
 
+    //En caso de que el usuario se haya registrado, autenticado o duplicado
+
+    useEffect(() => {
+        if(autenticado) {
+            props.history.push('/proyectos')
+        }
+
+        else if(mensaje) {
+            mostrarAlerta(mensaje.msg,mensaje.categoria);
+        }
+    }, [autenticado,mensaje,props.history])
+
     const registrarCuenta = e => {
         e.preventDefault();
 
         //validaciones antes de enviar la informacion al action
 
-        if(email.trim() === '' || username.trim() === '' || password.trim() === '' || confirm_password.trim()=== ''){
-            guardarError(true);
-            mensaje='Todos los campos son obligatorios';
+        if(email.trim() === '' || nombre.trim() === '' || password.trim() === '' || confirm_password.trim() === ''){
+            mostrarAlerta('Todos los campos son obligatorios','alerta-error');
             return;
-        } else if(password.trim().length < 6){
-            guardarError(true);
-            mensaje='La contraseña debe contener al menos 6 carácteres';
-            return;
-        } else if(password.trim() !== confirm_password.trim() ){
-            guardarError(true);
-            mensaje='Las contraseñas no coinciden';
+        } 
+
+        //password minimo de 6 caracteres
+        else if(password.trim().length < 6) {
+            mostrarAlerta('El password debe contener al menos 6 caracteres','alerta-error');
             return;
         }
 
-        guardarError(false);
-
-        //password minimo de 6 caracteres
-
+        else if(password.trim() !== confirm_password.trim() ){
+            mostrarAlerta('Las contraseñas no coinciden','alerta-error');
+            return;
+        }
         // no pueden ir campos vacios
 
         //los dos passwords deben ser iguales
+
+        registrarUsuario({email,password,nombre});
     }
 
     return ( 
 
        <div className="form-usuario">
+            { alertaState.alerta  ?<div className={`alerta ${alertaState.alerta .categoria}`}>{alertaState.alerta .msg}</div>: null}
            <div className="contenedor-form sombra-dark">
                <h1>Nueva Cuenta</h1>
                <form
                 onSubmit={registrarCuenta}
                >
-
-                <div className="campo-form">
-                    <label htmlFor="username">Usuario</label>
-                    <input type="text" name="username" id="username"
-                        placeholder="Tu usuario"
-                        value={username}
-                        onChange={actualizarState}
-                    />
-                </div>
-
                 <div className="campo-form">
                     <label htmlFor="email">Email</label>
                     <input type="email" name="email" id="email"
@@ -78,6 +81,16 @@ const Registrar = () => {
                         onChange={actualizarState}
                     />
                 </div>
+
+                <div className="campo-form">
+                    <label htmlFor="nombre">Usuario</label>
+                    <input type="text" name="nombre" id="nombre"
+                        placeholder="Tu Usuario"
+                        value={nombre}
+                        onChange={actualizarState}
+                    />
+                </div>
+                
 
                 <div className="campo-form">
                     <label htmlFor="password">Password</label>
