@@ -11,9 +11,14 @@ import ProyectoState from './context/Proyectos/proyectoState';
 import TareaState from './context/Tareas/tareaState';
 import AlertaState from './context/alertas/alertaState';
 import AuthState from './context/Auth/authState';
-console.log(process.env.REACT_APP_BACKEND_URL)
+import tokenAuth from './config/Token';
+import RutaPrivada from './Componentes/rutas/RutaPrivada';
 // en el componente principal se llaman los provider del context ṕara poder ser consumidos por los compoentes
 
+const token = localStorage.getItem("token")
+if(token) {
+  tokenAuth(token);
+}
 function App() {
   return (
     //agregar los consumer del context antes de todos los componentes y el routing
@@ -29,7 +34,7 @@ function App() {
 
                     <Route exact path="/" component={Login} />
                     <Route exact path="/registrar" component={Registrar} />
-                    <Route exact path="/proyectos" component={Proyectos} />
+                    <RutaPrivada exact path="/proyectos" component={Proyectos} />
 
                     {/*
                     
