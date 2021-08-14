@@ -2,14 +2,14 @@ import React ,{useContext} from 'react'
 import TareaContext from '../../context/Tareas/tareaContext';
 
 const Tarea = ({tarea}) => {
-
-    const {nombre,estado,id,idproyecto} = tarea;
+    console.log({tarea})
+    const {nombre,estado,_id,idproyecto} = tarea;
     const {eliminarTarea,obtenerTareasPorIdProyecto,modificarEstadoTarea,obtenerTareaActual} = useContext(TareaContext);
 
     const borrarTarea = () => {
 
-        eliminarTarea(id);
-        obtenerTareasPorIdProyecto(idproyecto);
+        eliminarTarea(_id);
+       // obtenerTareasPorIdProyecto(idproyecto);
     }
 
     const estadoTarea = obj => {
@@ -22,7 +22,7 @@ const Tarea = ({tarea}) => {
         }
 
         modificarEstadoTarea(tarea);
-       obtenerTareasPorIdProyecto(tarea.idproyecto)
+       obtenerTareasPorIdProyecto(tarea.proyectoId)
     }
     return ( 
 
@@ -56,7 +56,7 @@ const Tarea = ({tarea}) => {
                 <button 
                     type="button"
                     className="btn btn-primario"
-                    onClick={() => obtenerTareaActual(tarea.id)}
+                    onClick={() => obtenerTareaActual(tarea._id)}
                 >
                     Editar
                 </button>

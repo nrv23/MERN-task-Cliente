@@ -10,7 +10,7 @@ const Proyecto = ({proyecto}) => {
 
     const cargaProyecto = proyecto => {
         selecccionarProyecto(proyecto);
-        obtenerTareasPorIdProyecto(proyecto.id)
+        obtenerTareasPorIdProyecto(proyecto._id)
     }
     return ( 
 

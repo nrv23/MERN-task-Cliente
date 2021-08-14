@@ -7,30 +7,30 @@ import {
     NUEVO_PROYECTO,
     VALIDAR_FORMULARIO,
     PROYECTO_ACTUAL,
-    ELIMINAR_PROYECTO
+    ELIMINAR_PROYECTO,
+    PROYECTO_ERROR
 
 } from '../../types';
+import clienteAxios from '../../config/axios';
+import tokenAuth from '../../config/Token';
+
 
 // se crea un state inicial, ahora la api de context tiene los reducer que vienen  a sustituir a redux
 
 const ProyectoState = props => {
 
-    const proyectos = [];
-
-    //desde el state se va a hacer el request al servidor
 
     const initialState = { // el state inicial para redux y para contex api reducer siempre va ser un objeto
         proyectos: [], // este arrya va contener los prouyectos almacenados en la bd
         formulario: false, //esto para mostrar o no el input de crear un nuevo proyecto
         errorForm: false,
-        proyectoActual: null
+        proyectoActual: null,
+        mensaje: null
     }
     console.log(initialState)
     //crear el dispatch para ejecutar las funciones
     //useReducer(proyectoReducer,initialState) -> al useReducer se le envia como parametro el reducer y un state inicial
     const [state,dispatch] =  useReducer(proyectoReducer,initialState);
-
-    console.log(state)
 
     //crear funcion para ejeuctar el dispatch
 
@@ -47,20 +47,57 @@ const ProyectoState = props => {
 
     //obtener los proyectos
 
-    const obtenerProyectos = () => {
+    const obtenerProyectos = async () => {
 
-        dispatch({
-            type: LISTADO_PROYECTOS,
-            payload: proyectos
-        })
+        try {
+            const respuesta = await clienteAxios.get('/proyectos/');
+
+            console.log(respuesta);
+
+            dispatch({
+                type: LISTADO_PROYECTOS,
+                payload: respuesta.data
+            })
+
+        } catch (error) {
+            const alerta = {
+                msg: error.response.data.msg,
+                categoria: 'alerta-error'
+            }
+            dispatch({
+                type: PROYECTO_ERROR,
+                payload: alerta
+
+            })
+        }
+        
     }
 
-    const agregarProyecto = proyecto => {
-            proyecto.id = Date.now();
-        dispatch({
-            type: NUEVO_PROYECTO,
-            payload: proyecto
-        })
+    const agregarProyecto = async proyecto => {
+            //proyecto.id = Date.now();
+        try {
+
+            const {data} = await clienteAxios.post('/proyecto/',proyecto,{
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            dispatch({
+                type: NUEVO_PROYECTO,
+                payload: data.proyecto
+            })
+            
+        } catch (error) {
+            const alerta = {
+                msg: error.response.data.msg,
+                categoria: 'alerta-error'
+            }
+            dispatch({
+                type: PROYECTO_ERROR,
+                payload: alerta
+            })
+        }
     }
 
     const mostrarError = estado => {
@@ -78,12 +115,27 @@ const ProyectoState = props => {
         })
     }
 
-    const eliminarProyecto = id => {
+    const eliminarProyecto = async id => {
+
+       try {
+
+        const response = await clienteAxios.delete(`/proyecto/${id}`)
 
         dispatch({
             type:ELIMINAR_PROYECTO,
             payload: id
         })
+       } catch (error) {
+            const alerta = {
+                msg: error.response.data.msg,
+                categoria: 'alerta-error'
+            }
+            dispatch({
+                type: PROYECTO_ERROR,
+                payload: alerta
+
+            })
+       }
     }
 
     //retornar el provider
@@ -95,6 +147,7 @@ const ProyectoState = props => {
                 formulario: state.formulario,
                 errorForm: state.errorForm,
                 proyectoActual: state.proyectoActual,
+                mensaje: state.mensaje,
                 mostrarFormulario,
                 obtenerProyectos,
                 agregarProyecto,

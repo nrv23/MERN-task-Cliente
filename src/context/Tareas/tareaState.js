@@ -11,6 +11,7 @@ import {
     TAREA_ACTUAL,
     LIMPIAR_TAREA_ACTUAL
 } from '../../types';
+import clienteAxios from '../../config/axios';
 const TareaState = props => { // los props son lo que se envian al provider del context para poder habilitar la informacion del
     // context a los componentes que rodea
 
@@ -24,50 +25,90 @@ const TareaState = props => { // los props son lo que se envian al provider del 
     const [state,dispatch] = useReducer(tareaReducer,initialState); // retorna el state actual
 
 
-    const obtenerTareasPorIdProyecto = idproyecto => {
+    const obtenerTareasPorIdProyecto = async idproyecto => {
 
-        dispatch({
-            type: TAREAS_PROYECTO,
-            payload: idproyecto
-        })
+        try {
+
+            const {data:{tareas}} = await clienteAxios.get('/tareas/'+idproyecto);
+            dispatch({
+                type: TAREAS_PROYECTO,
+                payload: tareas
+            });
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const agregarTarea = (tarea) => {
-        dispatch({
-            type: NUEVA_TAREA,
-            payload: tarea
-        })
+    const agregarTarea = async (tarea) => {
+        try {
+            const respuesta = await clienteAxios.post('/tarea',tarea,{
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            dispatch({  
+                type: NUEVA_TAREA,
+                payload: respuesta.data.tarea
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
     
     const mostrarError = estado => {
 
-        dispatch({
-            type: ERROR_TAREA,
-            payload: estado 
-        })
+        
     }
 
-    const eliminarTarea = idtarea => {
+    const eliminarTarea = async idtarea => {
 
-        dispatch({
-            type: ELIMINAR_TAREA,
-            payload: idtarea
-        })
+        try {
+            const response = await clienteAxios.delete('/tarea/'+idtarea);
+            dispatch({
+                type: ELIMINAR_TAREA,
+                payload: idtarea
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const modificarEstadoTarea = tarea => {
+    const modificarEstadoTarea = async tarea => {
 
-        dispatch({
-            type: MODIFICAR_ESTADO_TAREA,
-            payload: tarea
-        })
+        try {
+
+            const response = await clienteAxios.patch('/tarea/estado/'+tarea._id,{},
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            dispatch({
+                type: MODIFICAR_ESTADO_TAREA,
+                payload: tarea
+            })
+        } catch (error) {
+            
+        }
     }
 
-    const actualizarTarea = tarea => {
-        dispatch({
-            type: ACTUALIZAR_TAREA,
-            payload: tarea
-        })
+    const actualizarTarea = async tarea => {
+
+        try {
+            const response = await clienteAxios.put('/tarea/'+tarea._id,tarea,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            dispatch({
+                type: ACTUALIZAR_TAREA,
+                payload: tarea
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const obtenerTareaActual = id => {

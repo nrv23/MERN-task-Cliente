@@ -6,7 +6,8 @@ import {
     NUEVO_PROYECTO,
     VALIDAR_FORMULARIO,
     PROYECTO_ACTUAL,
-    ELIMINAR_PROYECTO
+    ELIMINAR_PROYECTO,
+    PROYECTO_ERROR
 } from '../../types'
 
 
@@ -54,9 +55,14 @@ export default (state,action) => { // el reducer de context funciona igual al re
         case ELIMINAR_PROYECTO: 
             return {
                 ...state,
-                proyectos: state.proyectos.filter(proyecto => proyecto.id !== action.payload),
+                proyectos: state.proyectos.filter(proyecto => proyecto._id !== action.payload),
                 proyectoActual: null,
 
+            }
+        case PROYECTO_ERROR:
+            return {
+                ...state,
+                mensaje: action.payload
             }
         default:
             return state; // en el default siempre se retorna el state por si el switch no cumple ningun caso

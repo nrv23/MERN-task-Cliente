@@ -15,18 +15,14 @@ export default (state,action) => {
 
     switch(action.type){
         case TAREAS_PROYECTO:
-            console.log(action.payload)
             return {
                 ...state,
-                tareaState: state.tareas.filter(tarea => {
-                    console.log(tarea);
-                    return tarea.idproyecto === action.payload
-                })
+                tareaState: action.payload
             }
         case NUEVA_TAREA:
             return {
                 ...state,
-                tareas: [...state.tareas,action.payload]
+                tareaState: [...state.tareaState,action.payload]
             }
         case ERROR_TAREA:
             return {
@@ -36,23 +32,23 @@ export default (state,action) => {
         case ELIMINAR_TAREA:
             return {
                 ...state,
-                tareas: state.tareas.filter(({id}) => id !== action.payload)
+                tareaState: state.tareaState.filter(tarea => tarea._id !== action.payload)
             }
         case MODIFICAR_ESTADO_TAREA: 
             return {
                 ...state,
-                tareas: state.tareas.map(tarea => tarea.id === action.payload.id ? action.payload: tarea )
+                tareaState: state.tareaState.map(tarea => tarea._id === action.payload._id ? action.payload: tarea )
             }
         case TAREA_ACTUAL:
             return{
                 ...state,
-                tareaActual: state.tareas.filter(({id}) => id === action.payload)[0]
+                tareaActual: state.tareaState.filter(({_id}) => _id === action.payload)[0]
             }
         case ACTUALIZAR_TAREA:
             return {
                 ...state,
-                tareas: state.tareas.map(tarea =>{
-                    return tarea.id === action.payload.id ? action.payload: tarea
+                tareaState: state.tareaState.map(tarea =>{
+                    return tarea._id === action.payload._id ? action.payload: tarea
                 } )
             }
         case LIMPIAR_TAREA_ACTUAL: {
